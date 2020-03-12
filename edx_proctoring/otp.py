@@ -1,3 +1,7 @@
+from .models import ProctoredExamStudentOTP
+
+def get_otp_attempt(exam_attempt_obj):
+    exam_otp_obj = ProctoredExamStudentOTP.objects.get_otp_attempt(exam_attempt_obj)
 
 
 # pylint: disable=inconsistent-return-statements
