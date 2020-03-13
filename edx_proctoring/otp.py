@@ -1,4 +1,11 @@
-from .models import ProctoredExamStudentOTP
+from __future__ import absolute_import
+
+import logging
+from datetime import datetime, timedelta
+import pytz
+from django.core.mail.message import EmailMessage
+from django.template import loader
+from edx_proctoring.models import ProctoredExamStudentOTP
 
 def _check_for_otp_timeout(otp):
     """
