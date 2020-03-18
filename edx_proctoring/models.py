@@ -826,8 +826,9 @@ class ProctoredExamStudentOTP(TimeStampedModel):
     This is were we store the proctored exam one time password
     for start exam
     """
-    exam_attempt = models.ForeignKey(ProctoredExamStudentAttempt, on_delete=models.CASCADE)
-    otp = models.IntegerField(null=True)
+    exam = models.ForeignKey(ProctoredExam, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    otp = models.CharField(max_length=10, null=True)
     created_at = models.DateTimeField(null=True)
     expires_at = models.DateTimeField(null=True)
     status = models.CharField(max_length=64)
@@ -836,4 +837,16 @@ class ProctoredExamStudentOTP(TimeStampedModel):
         """ Meta class for this Django model """
         db_table = 'proctoring_proctoredexamstudentotp'
         verbose_name = 'proctored exam student otp'
-        unique_together = (('exam_attempt', 'otp'),)
+        unique_together = (('exam', 'user', 'otp'),)
+
+    @classmethod
+    def get_otp(cls, exam, otp):
+        """
+        Returns the Proctored Exam if found else returns None,
+        Given exam_id (PK)
+        """
+        try:
+            otp = cls.objects.get(exam=exam, otp=otp)
+        except cls.DoesNotExist:  # pylint: disable=no-member
+            otp = None
+        return otp
