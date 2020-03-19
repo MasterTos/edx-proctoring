@@ -16,9 +16,15 @@
     </strong>
     {% trans "you will have "%} {{total_time|lower}} {% trans " to complete and submit the exam." %}
   </p>
+  <p>
+      <input id ="proctored-exam-code" class="proctored-exam-code" size="40" type="text" value="">
+      <button id="copy-exam-code" class="btn copy-exam-code-button">{% trans "Copy Exam Code" %}</button>
+  </p>
   <button class="gated-sequence start-timed-exam action-primary" data-ajax-url="{{enter_exam_endpoint}}" data-exam-id="{{exam_id}}">
     <a>
-      <input type="text"></input>
+      {% blocktrans %}
+        I am ready to start this timed exam.
+      {% endblocktrans %}
       <span class="icon fa fa-arrow-circle-right" aria-hidden="true"></span>
     </a>
   </button>
