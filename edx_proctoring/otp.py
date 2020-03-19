@@ -47,6 +47,41 @@ def _get_student_otp_view(exam, context, exam_is, user_id, course_id):
     has_due_date = exam['due_date'] is not None
     pass
 
+# function to generate OTP 
+def _OTPgen() : 
+  
+    # Declare a string variable   
+    # which stores all alpha-numeric characters 
+    string = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    OTP = "" 
+    varlen= len(string) 
+    for i in range(6) : 
+        OTP += string[m.floor(r.random() * varlen)] 
+  
+    return (OTP) 
+
+def generate_student_otp(exam, user):
+    otp = None
+    while otp is None:
+        try:
+            now_utc = datetime.now(pytz.UTC)
+            expires = now_utc + datetime.timedelta(minutes = 10)
+            otp = ProctoredExamStudentOTP.object.create(
+                exam=exam,
+                user=user,
+                otp=_OTPgen(),
+                created_at=now_utc,
+                expires_at=expires,
+                status='created'
+                )
+        except:
+            pass
+
+    return otp
+
+def send_otp_email(user, otp):
+    pass
+
 class StudentProctoredExamOTP(ProctoredAPIView):
     """
     Endpoint for the StudentProctoredExamOTP
