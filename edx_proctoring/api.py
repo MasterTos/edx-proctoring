@@ -64,6 +64,11 @@ from edx_proctoring.utils import (
     verify_and_add_wait_deadline
 )
 
+from edx_proctoring.otp import (
+    _get_student_otp_view,
+    is_otp_activated
+)
+
 log = logging.getLogger(__name__)
 
 SHOW_EXPIRY_MESSAGE_DURATION = 1 * 60  # duration within which expiry message is shown for a timed-out exam
@@ -1653,6 +1658,8 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
     if not attempt_status:
         if is_exam_passed_due(exam, user=user_id):
             student_view_template = 'timed_exam/expired.html'
+        elif not is_otp_activated(exam, user=user_id):
+            student_view_template = _get_student_otp_view()
         else:
             student_view_template = 'timed_exam/entrance.html'
     elif attempt_status == ProctoredExamStudentAttemptStatus.started:

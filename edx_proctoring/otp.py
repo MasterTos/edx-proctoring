@@ -33,31 +33,28 @@ def get_student_otp(exam_obj, user, otp):
     otp = _check_for_otp_timeout(exam_otp_obj)
     return otp
 
+def is_otp_activated(exam, user_id):
+    user = User.objects.get(id=user_id)
+    return ProctoredExamStudentOTP.exits(exam=exam, user=user, status='activated')
 
 # pylint: disable=inconsistent-return-statements
-def _get_student_otp_view(exam, context, exam_is, user_id, course_id):
+def _get_student_otp_view():
     """
     Returns a rendered view for the student one time password view
     """
-    student_view_template = None
-    attempt = get_exam_attempt(exam_id, user_id)
-    has_time_expired = False
-    otp = get_student_otp(attempt)
-    otp_status = otp['status'] if otp else None
-    has_due_date = exam['due_date'] is not None
-    pass
+    student_view_template = 'otp/entrance.html'
+    return student_view_template
 
 # function to generate OTP 
-def _OTPgen() : 
+def _OTPgen():
   
     # Declare a string variable   
     # which stores all alpha-numeric characters 
     string = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     OTP = "" 
     varlen= len(string) 
-    for i in range(6) : 
+    for i in range(6): 
         OTP += string[m.floor(r.random() * varlen)] 
-  
     return (OTP) 
 
 def generate_student_otp(exam, user):
