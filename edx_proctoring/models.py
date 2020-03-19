@@ -840,13 +840,13 @@ class ProctoredExamStudentOTP(TimeStampedModel):
         unique_together = (('exam', 'user', 'otp'),)
 
     @classmethod
-    def get_otp(cls, exam, otp):
+    def get_otp(cls, exam, user, otp):
         """
         Returns the Proctored Exam if found else returns None,
         Given exam_id (PK)
         """
         try:
-            otp = cls.objects.get(exam=exam, otp=otp)
+            otp = cls.objects.get(exam=exam, user=user, otp=otp)
         except cls.DoesNotExist:  # pylint: disable=no-member
             otp = None
         return otp
