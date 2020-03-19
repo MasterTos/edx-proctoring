@@ -115,6 +115,9 @@ class StudentProctoredExamOTP(ProctoredAPIView):
         
         update_otp_status(otp_obj, status='')
 
+        data = {'exam_id': exam_id}
+        return Response(data)
+
 class StudentProctoredExamRequestOTP(ProctoredAPIView):
     """
     Endpoint for the StudentProctoredExamOTP
@@ -138,3 +141,7 @@ class StudentProctoredExamRequestOTP(ProctoredAPIView):
         exam_id = request.data.get('exam_id', None)
         exam = get_exam_by_id(exam_id)
         user = request.user
+        otp = generate_student_otp(exam, user)
+        send_otp_email(user, otp)
+        data = {'exam_id': exam_id}
+        return Response(data)
