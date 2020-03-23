@@ -6,7 +6,6 @@ import pytz
 from django.core.mail.message import EmailMessage
 from django.template import loader
 from edx_proctoring.models import ProctoredExamStudentOTP
-from edx_proctoring.api import get_exam_attempt
 from edx_proctoring.views import ProctoredAPIView
 
 def update_otp_status(otp, status):
