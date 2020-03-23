@@ -75,6 +75,11 @@ from edx_proctoring.utils import (
     obscured_user_id,
 )
 
+from edx_proctoring.otp import (
+    generate_student_otp,
+    send_otp_email,
+)
+
 ATTEMPTS_PER_PAGE = 25
 
 LOG = logging.getLogger("edx_proctoring_views")
@@ -1079,9 +1084,8 @@ class StudentProctoredExamRequestOTP(ProctoredAPIView):
         HTTP POST handler. To create an exam create a new otp.
         """
         exam_id = request.data.get('exam_id', None)
-        exam = get_exam_by_id(exam_id)
         user = request.user
-        otp = generate_student_otp(exam, user)
+        otp = generate_student_otp(exam_id, user)
         send_otp_email(user, otp)
-        data = {'exam_id': exam_id}
+        data = {'exam_id': exam_id, 'otp': otp.otp}
         return Response(data)

@@ -90,7 +90,7 @@
  
   $('#otp_request').click(function () {
     disablebutton();
-    var exam_id = $(this).data('exam-id');
+    var exam_id = $('.start-timed-exam').data('exam-id');
     $.post(
       '/api/edx_proctoring/v1/proctored_exam/otp/request',
       {

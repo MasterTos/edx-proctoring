@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import pytz
 from django.core.mail.message import EmailMessage
 from django.template import loader
-from edx_proctoring.models import ProctoredExamStudentOTP
+from edx_proctoring.models import ProctoredExamStudentOTP, ProctoredExam
 from django.contrib.auth.models import User
 # from edx_proctoring.views import ProctoredAPIView
 
@@ -50,32 +50,32 @@ def _get_student_otp_view():
 
 # function to generate OTP 
 def _OTPgen():
-  
+    import math
+    import random
     # Declare a string variable   
     # which stores all alpha-numeric characters 
-    string = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    string = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     OTP = "" 
     varlen= len(string) 
     for i in range(6): 
-        OTP += string[m.floor(r.random() * varlen)] 
-    return (OTP) 
+        OTP += string[int(math.floor(random.random() * varlen))] 
+    return OTP
 
 def generate_student_otp(exam, user):
     otp = None
-    while otp is None:
-        try:
-            now_utc = datetime.now(pytz.UTC)
-            expires = now_utc + datetime.timedelta(minutes = 10)
-            otp = ProctoredExamStudentOTP.object.create(
-                exam=exam,
-                user=user,
-                otp=_OTPgen(),
-                created_at=now_utc,
-                expires_at=expires,
-                status='created'
-                )
-        except:
-            pass
+    # try:
+    now_utc = datetime.now(pytz.UTC)
+    expires = now_utc + timedelta(minutes = 10)
+    otp = ProctoredExamStudentOTP.objects.create(
+        exam=ProctoredExam.get_exam_by_id(exam),
+        user=user,
+        otp=_OTPgen(),
+        created_at=now_utc,
+        expires_at=expires,
+        status='created'
+        )
+    # except:
+    #     pass
 
     return otp
 
