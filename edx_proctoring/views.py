@@ -78,6 +78,8 @@ from edx_proctoring.utils import (
 from edx_proctoring.otp import (
     generate_student_otp,
     send_otp_email,
+    get_student_otp,
+    update_otp_status,
 )
 
 ATTEMPTS_PER_PAGE = 25
@@ -1050,9 +1052,8 @@ class StudentProctoredExamOTP(ProctoredAPIView):
         """
         exam_id = request.data.get('exam_id', None)
         otp = request.data.get('otp', None)
-        exam = get_exam_by_id(exam_id)
         user = request.user
-        otp_obj = get_student_otp(exam, user, otp)
+        otp_obj = get_student_otp(exam_id, user, otp)
         if (not otp_obj):
             raise ProctoredExamPermissionDenied(
                 u'Attempted to access expired exam with exam_id {exam_id}'.format(exam_id=exam_id)

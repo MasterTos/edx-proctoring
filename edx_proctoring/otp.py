@@ -4,9 +4,11 @@ import logging
 from datetime import datetime, timedelta
 import pytz
 from django.core.mail.message import EmailMessage
+from edx_proctoring import constants
 from django.template import loader
 from edx_proctoring.models import ProctoredExamStudentOTP, ProctoredExam
 from django.contrib.auth.models import User
+from django.core.mail.message import EmailMessage
 # from edx_proctoring.views import ProctoredAPIView
 
 def update_otp_status(otp, status):
@@ -29,10 +31,10 @@ def _check_for_otp_timeout(otp):
         otp = None
     return otp
 
-def get_student_otp(exam_obj, user, otp):
-    if not exam_obj:
+def get_student_otp(exam, user, otp):
+    if not exam:
         return None
-    exam_otp_obj = ProctoredExamStudentOTP.get_otp(exam=exam_obj, user=user, otp=otp)
+    exam_otp_obj = ProctoredExamStudentOTP.get_otp(exam=exam, user=user, otp=otp)
     otp = _check_for_otp_timeout(exam_otp_obj)
     return otp
 
@@ -80,4 +82,21 @@ def generate_student_otp(exam, user):
     return otp
 
 def send_otp_email(user, otp):
-    pass
+    email_subject = "Gennext exam OTP"
+    email_template_path = 'otp/otp_send.html'
+    email_template = loader.get_template(email_template_path)
+    body = email_template.render({
+        'username': user.username,
+        'exam_name': otp.exam.exam_name,
+        'otp': otp,
+    })
+
+    email = EmailMessage(
+        body=body,
+        from_email=constants.FROM_EMAIL,
+        to=[user.email],
+        subject=email_subject,
+    )
+    email.content_subtype = 'html'
+
+    email.send()

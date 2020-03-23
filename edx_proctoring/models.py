@@ -790,6 +790,7 @@ class ProctoredExamStudentOTP(TimeStampedModel):
         Given exam_id (PK)
         """
         try:
+            exam = ProctoredExam.get_exam_by_id(exam)
             otp = cls.objects.get(exam=exam, user=user, otp=otp)
         except cls.DoesNotExist:  # pylint: disable=no-member
             otp = None
