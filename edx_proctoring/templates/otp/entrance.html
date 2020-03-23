@@ -18,12 +18,12 @@
   </p>
   <p>
       <input id ="proctored-exam-code" class="proctored-exam-code" size="40" type="text" value="">
-      <button id="copy-exam-code" class="btn copy-exam-code-button">{% trans "Copy Exam Code" %}</button>
+      <button id="otp_request" class="btn">{% trans "Request OTP" %}</button>
   </p>
   <button class="gated-sequence start-timed-exam action-primary" data-ajax-url="{{enter_exam_endpoint}}" data-exam-id="{{exam_id}}">
     <a>
       {% blocktrans %}
-        I am ready to start this timed exam.
+        Submit OTP and I am ready to start this timed exam.
       {% endblocktrans %}
       <span class="icon fa fa-arrow-circle-right" aria-hidden="true"></span>
     </a>
@@ -80,4 +80,34 @@
       }
     }
   );
+
+  var disablebutton = function () {
+    $('#otp_request').attr('disabled', true)
+    setTimeout(function(){
+      $('#otp_request').attr('disabled', false)
+    },30000)
+  }
+ 
+  $('#otp_request').click(function () {
+    disablebutton();
+    var exam_id = $(this).data('exam-id');
+    $.post(
+      '/api/edx_proctoring/v1/proctored_exam/otp/request',
+      {
+        "exam_id": exam_id,
+      },
+      function (data) {
+        // reload the page, because we've unlocked it
+        console.log('test')
+      }
+    ).fail(function(){
+      var msg = gettext(
+        "There has been a problem starting your exam.\n\n" +
+        "Possible reasons are that your account has not been fully activated,\n" +
+        "you are experiencing a network connection problem, or there has been\n" +
+        "a service disruption. Please check these potential problems and try again."
+      );
+      alert(msg);
+    });
+});
 </script>

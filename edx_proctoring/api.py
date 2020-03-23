@@ -1614,7 +1614,7 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
     if not attempt_status:
         if has_due_date_passed(exam['due_date']):
             student_view_template = 'timed_exam/expired.html'
-        elif not is_otp_activated(exam, user_id=user_id):
+        elif not is_otp_activated(exam=exam_id, user_id=user_id):
             student_view_template = _get_student_otp_view()
         else:
             student_view_template = 'timed_exam/entrance.html'
