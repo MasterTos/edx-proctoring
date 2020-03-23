@@ -30,7 +30,7 @@ def _check_for_otp_timeout(otp):
     return otp
 
 def get_student_otp(exam_obj, user, otp):
-    if not exam_obj
+    if not exam_obj:
         return None
     exam_otp_obj = ProctoredExamStudentOTP.get_otp(exam=exam_obj, user=user, otp=otp)
     otp = _check_for_otp_timeout(exam_otp_obj)
