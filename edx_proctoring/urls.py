@@ -8,7 +8,7 @@ from django.conf import settings
 from django.conf.urls import url, include
 
 from edx_proctoring import views, callbacks, instructor_dashboard_exam_urls
-from edx_proctoring.otp import StudentProctoredExamRequestOTP, StudentProctoredExamOTP
+from edx_proctoring.views import StudentProctoredExamRequestOTP, StudentProctoredExamOTP
 
 app_name = u'edx_proctoring'
 

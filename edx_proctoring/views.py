@@ -1021,3 +1021,67 @@ class InstructorDashboard(AuthenticatedAPIView):
             else:
                 error = _('No proctored exams in course {course_id}').format(course_id=course_id)
         return Response(data=error, status=404, headers={'X-Frame-Options': 'sameorigin'})
+
+class StudentProctoredExamOTP(ProctoredAPIView):
+    """
+    Endpoint for the StudentProctoredExamOTP
+    /edx_proctoring/v1/proctored_exam/otp
+
+    Supports:
+        HTTP POST: Submit otp code 
+
+    HTTP POST
+    create an exam otp
+    Expected POST data: {
+        "exam_id": "1",
+        "external_id": "123",
+        "otp": "abcdef"
+    }
+    """
+
+    def post(self, request):
+        """
+        HTTP POST handler. To create an exam otp.
+        """
+        exam_id = request.data.get('exam_id', None)
+        otp = request.data.get('otp', None)
+        exam = get_exam_by_id(exam_id)
+        user = request.user
+        otp_obj = get_student_otp(exam, user, otp)
+        if (not otp_obj):
+            raise ProctoredExamPermissionDenied(
+                u'Attempted to access expired exam with exam_id {exam_id}'.format(exam_id=exam_id)
+            )
+        
+        update_otp_status(otp_obj, status='')
+
+        data = {'exam_id': exam_id}
+        return Response(data)
+
+class StudentProctoredExamRequestOTP(ProctoredAPIView):
+    """
+    Endpoint for the StudentProctoredExamOTP
+    /edx_proctoring/v1/proctored_exam/otp/request/
+
+    Supports:
+        HTTP POST: create otp code 
+
+    HTTP POST
+    create an exam otp
+    Expected POST data: {
+        "exam_id": "1",
+        "external_id": "123",
+    }
+    """
+
+    def post(self, request):
+        """
+        HTTP POST handler. To create an exam create a new otp.
+        """
+        exam_id = request.data.get('exam_id', None)
+        exam = get_exam_by_id(exam_id)
+        user = request.user
+        otp = generate_student_otp(exam, user)
+        send_otp_email(user, otp)
+        data = {'exam_id': exam_id}
+        return Response(data)
