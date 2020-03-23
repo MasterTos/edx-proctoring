@@ -17,7 +17,7 @@ def _check_for_otp_timeout(otp):
         Helper method for checking
         one time password has expiration
     """
-    if not otp
+    if not otp:
         return None
 
     now_utc = datetime.now(pytz.UTC)
