@@ -53,6 +53,11 @@ from edx_proctoring.utils import (
     obscured_user_id,
 )
 
+from edx_proctoring.otp import (
+    _get_student_otp_view,
+    is_otp_activated
+)
+
 from edx_proctoring.backends import get_backend_provider
 from edx_proctoring.runtime import get_runtime_service
 
@@ -1609,6 +1614,8 @@ def _get_timed_exam_view(exam, context, exam_id, user_id, course_id):
     if not attempt_status:
         if has_due_date_passed(exam['due_date']):
             student_view_template = 'timed_exam/expired.html'
+        elif not is_otp_activated(exam, user=user_id):
+            student_view_template = _get_student_otp_view()
         else:
             student_view_template = 'timed_exam/entrance.html'
     elif attempt_status == ProctoredExamStudentAttemptStatus.started:

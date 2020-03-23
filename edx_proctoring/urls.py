@@ -8,6 +8,7 @@ from django.conf import settings
 from django.conf.urls import url, include
 
 from edx_proctoring import views, callbacks, instructor_dashboard_exam_urls
+from edx_proctoring.otp import StudentProctoredExamRequestOTP, StudentProctoredExamOTP
 
 app_name = u'edx_proctoring'
 
@@ -102,6 +103,16 @@ urlpatterns = [
         r'edx_proctoring/proctoring_review_callback/$',
         views.AnonymousReviewCallback.as_view(),
         name='anonymous.proctoring_review_callback'
+    ),
+        url(
+        r'edx_proctoring/v1/proctored_exam/otp$',
+        StudentProctoredExamOTP.as_view(),
+        name='proctored_exam.otp'
+    ),
+    url(
+        r'edx_proctoring/v1/proctored_exam/otp/request$',
+        StudentProctoredExamRequestOTP.as_view(),
+        name='proctored_exam.otp.request'
     ),
     url(r'^', include('rest_framework.urls', namespace='rest_framework'))
 ]
