@@ -38,7 +38,7 @@ def get_student_otp(exam_obj, user, otp):
 
 def is_otp_activated(exam, user_id):
     user = User.objects.get(id=user_id)
-    return ProctoredExamStudentOTP.objects.filter(exam=exam, user=user, status='activated').exists()
+    return ProctoredExamStudentOTP.objects.filter(exam=exam, user=user, status='activated').count()
 
 # pylint: disable=inconsistent-return-statements
 def _get_student_otp_view():
