@@ -10,6 +10,7 @@ from edx_proctoring.models import ProctoredExamStudentOTP, ProctoredExam
 from django.contrib.auth.models import User
 from django.core.mail.message import EmailMessage
 # from edx_proctoring.views import ProctoredAPIView
+log = logging.getLogger(__name__)
 
 def update_otp_status(otp, status):
     pass
@@ -99,4 +100,5 @@ def send_otp_email(user, otp):
     )
     email.content_subtype = 'html'
 
-    email.send()
+    log.info(email.__dict__)
+    email.send(fail_silently=False)
